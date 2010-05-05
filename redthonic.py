@@ -1,4 +1,4 @@
-class RedisValue(object):
+class Value(object):
     base_commands = (
         'exists',
         'delete',
@@ -35,10 +35,10 @@ class RedisValue(object):
         return success
 
 
-class RedisString(RedisValue):
+class String(Value):
     """A Pythonic representation of a Redis string value.
 
-    >>> s = RedisString(db, 'testkey')
+    >>> s = String(db, 'testkey')
     >>> s.set('spam')
     True
     >>> s.type()
@@ -83,17 +83,17 @@ class RedisString(RedisValue):
         # For attribute access that does not match a Redis command, attempt to
         # find a matching string attribute.
         try:
-            return super(RedisString, self).__getattr__(attr)
+            return super(String, self).__getattr__(attr)
         except AttributeError, e:
             if hasattr(str, attr):
                 return getattr(str(self), attr)
             raise e
 
 
-class RedisList(RedisValue):
+class List(Value):
     """A Pythonic representation of a Redis list value.
 
-    >>> l = RedisList(db, key='testlist')
+    >>> l = List(db, key='testlist')
     >>> l.append('spam')
     >>> l.type()
     'list'
@@ -172,10 +172,10 @@ class RedisList(RedisValue):
             self.append(value)
 
 
-class RedisSet(RedisValue):
+class Set(Value):
     """A Pythonic representation of a Redis set value.
 
-    >>> s = RedisSet(db, 'testset')
+    >>> s = Set(db, 'testset')
     >>> s.add('graham')
     >>> s.add('eric')
     >>> len(s)
