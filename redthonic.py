@@ -76,9 +76,6 @@ class String(Value):
     def __len__(self):
         return len(str(self))
 
-    def __set__(self, instance, value):
-        self.set(value)
-
     def __getattr__(self, attr):
         # For attribute access that does not match a Redis command, attempt to
         # find a matching string attribute.
@@ -152,6 +149,9 @@ class List(Value):
     def __setitem__(self, index, value):
         return self.lset(index, value)
 
+    def __str__(self):
+        return str(self.lrange(0, -1))
+
     def __iter__(self):
         # Callers might be iterating through very long lists; it doesn't make
         # sense to retrieve items one at a time, but retrieving the entire list
@@ -204,7 +204,7 @@ class Set(Value):
         'scard',
         'sismember',
         'smembers',
-        'srandmembers',
+        'srandmember',
     )
 
     def __contains__(self, value):
@@ -212,6 +212,9 @@ class Set(Value):
 
     def __len__(self):
         return self.scard()
+
+    def __str__(self):
+        return str(self.smembers())
 
     def add(self, value):
         self.sadd(value)
